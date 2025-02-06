@@ -4,6 +4,8 @@ import express from "express";
 const app = express();
 app.use(express.json());
 
+const PORT = 3000;
+
 
 let users = [{ id: 1, name: "Dmytro Danylkovych", age: 19 }];
 let cars = [{ id: 1, brand: "Ford"}];
@@ -54,8 +56,8 @@ app.delete("/users/:id", (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 
