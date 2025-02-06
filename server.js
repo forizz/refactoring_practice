@@ -12,16 +12,12 @@ let cars = [{ id: 1, brand: "Ford"}];
 
 let lastUserId = 1;
 
-function getUserById(id) {
-    return users.find(user => user.id === id);
-}
-
-function getCarById(id) {
-    return cars.find(car => car.id === id);
+function getById(object, id) {
+    return object.find(item => item.id === id);
 }
 
 app.get("/users/:id", (req, res) => {
-    let user = getUserById(parseInt(req.params.id));
+    let user = getById(users, parseInt(req.params.id));
     if (user) {
         res.json(user);
     } else {
