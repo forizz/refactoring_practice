@@ -18,39 +18,71 @@ function getCarById(id) {
     return cars.find(car => car.id === id);
 }
 
-app.get("/users/:id", (req, res) => {
-    let user = getUserById(parseInt(req.params.id));
+function getUser(id) {
+    let user = getUserById(parseInt(id));
     if (user) {
-        res.json(user);
+        return user;
     } else {
-        res.status(404).send("User not found");
+        throw new Error("User not found!");
+    }
+}
+
+function addUser(users, name, age) {
+    if (!name || !age) {
+        throw new Error("User not found!");
+    }
+    let newUser = { id: ++lastUserId, name: name, age: age };
+    users.push(newUser);
+    return newUser;
+}
+
+function deleteUser(users, id) {
+    let userId = parseInt(id);
+    if (isNaN(userId)) {
+        throw new Error("User not found!");
+    }
+    else {
+        let userIndex = users.findIndex(user => user.id === userId);
+        if (userIndex !== -1) {
+            users.splice(userIndex, 1);
+            return "User deleted";
+        } else {
+            throw new Error("User not found!");
+        }
+    }
+}
+
+app.get("/users/:id", (req, res) => {
+    try {
+        let response = getUser(req.params.id);
+        res.json(response);
+    }
+    catch (error) {
+        console.log(error);
     }
 });
 
 app.post("/users", (req, res) => {
-    let name = req.body.name;
-    let age = req.body.age;
-    if (!name || !age) {
-        res.status(400).send("Invalid input");
-        return;
+    try {
+        let response = addUser(
+            users,
+            req.body.name,
+            req.body.age
+        );
+        res.json(response);
     }
-    let newUser = { id: ++lastUserId, name: name, age: age };
-    users.push(newUser);
-    res.status(201).json(newUser);
+    catch (error) {
+        console.log(error);
+    }
 });
 
 app.delete("/users/:id", (req, res) => {
-    let userId = parseInt(req.params.id);
-    if (isNaN(userId)) {
-        res.status(400).send("Invalid ID");
-    } else {
-        let userIndex = users.findIndex(user => user.id === userId);
-        if (userIndex !== -1) {
-            users.splice(userIndex, 1);
-            res.send("User deleted");
-        } else {
-            res.status(404).send("User not found");
-        }
+    try {
+        let response = deleteUser(req.params.id);
+        res.json(response);
+    }
+    catch (error) {
+        console.log(error);
     }
 });
 
